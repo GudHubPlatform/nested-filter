@@ -16,11 +16,12 @@ class StaticNestedList extends GhHtmlElement {
     async onInit() {
         super.render(this);
 
+        this.filters = [];
         const self = this;
         
         const iconStorage = gudhub.ghconstructor.angularInjector.get('iconsStorage');
         this.folderIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.folder_icon, '0D99FF', '12px');
-        this.itemIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.item_icon, '0D99FF', '28px');
+        this.itemIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.item_icon, '0D99FF', '12px');
         let optionsClone = structuredClone(this.scope.field_model.data_model.options);
         const data = optionsClone.map((option, index) => {
             return {
@@ -50,20 +51,54 @@ class StaticNestedList extends GhHtmlElement {
         });
 
         $(this).on("select_node.jstree", function (e, selected) {
-          const filter = this.mergeFilters(selected.node);
+          let parents = [];
+          let parent = $(this).jstree(true).get_node(selected.node.parent);
+          this.filters = [];
+          parents.push(selected.node);
+
+          while(parent.id !== '#') {
+            parents.push(parent);
+            parent = $(this).jstree(true).get_node(parent.parent);
+          }
+          
+          parents.forEach(element => {
+            this.mergeFilters(element.data);
+          });
           
           if (this.scope.field_model.data_model.app_id && this.scope.field_model.data_model.table_field_id) {
             gudhub.emit("filter", { app_id: this.scope.field_model.data_model.app_id, field_id: this.scope.field_model.data_model.table_field_id }, 
-            selected.node.data)
+            this.filters)
           }
 
         });
 
     }
 
-    mergeFilters(currentNode) {
-      let parent = $(this).jstree(true).get_node(currentNode.parent);
-      return gudhub.mergeObjects(parent.data, currentNode.data);
+    mergeFilters(currentNodeFilter) {
+      const self = this;
+      const mergedFieldIds = [];
+      if(this.filters.length > 0) {
+        
+        this.filters.forEach((filter, index) => {
+          for(let i = 0; i < currentNodeFilter.length; i++) {
+              if(filter.field_id == currentNodeFilter[i].field_id) {
+                mergedFieldIds.push(filter.field_id);
+                  self.filters[index] = gudhub.mergeObjects(currentNodeFilter[i], self.filters[index]);
+              }
+          }
+        });
+
+        for(let k = 0; k < currentNodeFilter.length; k++) {
+          if(!mergedFieldIds.includes(currentNodeFilter[k].field_id)) {
+            self.filters.push(currentNodeFilter[k]);
+          }
+        }
+
+      } else {
+        currentNodeFilter.forEach(filter => {
+          self.filters.push(filter);
+        });
+      }
     }
 
     setIconForElements(elements, tree) {

@@ -1,1 +1,35 @@
 @import '~jstree/dist/themes/default/style.css';
+static-nested-list {
+    .jstree-container-ul {
+        width: 100%;
+    }
+    .jstree-node {
+        width: 100%;
+        margin-left: 0px;
+        width: initial;
+    }
+    .jstree-default {
+        width: initial;
+        .jstree-themeicon-custom {
+            background-size: 100%!important;
+        }
+    }
+ 
+    .jstree-children {
+        .droped-zone {
+        .jstree-wholerow-hovered {
+            border-bottom: 3px solid #beebff;
+            background: transparent!important;
+        }
+        }
+    }
+    .jstree-anchor:hover {
+        padding: 0 4px 0 1px;
+    }
+    .jstree-anchor {
+        width: calc(100% - 24px);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}
