@@ -7,11 +7,11 @@ export default class StaticNestedListData {
     getTemplate() {
         return {
             constructor: 'field',
-            name: 'Nested List',
+            name: 'Nested Filter',
             icon: 'scheduling',
             model: {
                 field_id: 0,
-                field_name: 'Nested List',
+                field_name: 'Nested Filter',
                 name_space: 'static_nested_list',
                 field_value: '',
                 data_type: 'static_nested_list',
