@@ -20,8 +20,12 @@ class StaticNestedList extends GhHtmlElement {
         const self = this;
         
         const iconStorage = gudhub.ghconstructor.angularInjector.get('iconsStorage');
-        this.folderIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.folder_icon, '0D99FF', '12px');
-        this.itemIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.item_icon, '0D99FF', '12px');
+        
+        if (this.scope.field_model.data_model.show_icon) {
+          this.folderIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.folder_icon, '0D99FF', '12px');
+          this.itemIcon = await iconStorage.getCanvasIcon(this.scope.field_model.data_model.item_icon, '0D99FF', '12px');
+        }
+        
         let optionsClone = structuredClone(this.scope.field_model.data_model.options);
         const data = optionsClone.map((option, index) => {
             return {
