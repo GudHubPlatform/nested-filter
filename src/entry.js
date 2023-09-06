@@ -90,6 +90,7 @@ export default class StaticNestedListData {
                             show_field_name: true
                           },
                           field_name: "Bind to table",
+                          name_space: "bind_to_table",
                           data_type: "text_opt"
                         };
         
@@ -117,35 +118,6 @@ export default class StaticNestedListData {
                         scope.$watch(
                           function() {
                             return scope.fieldModel.data_model.app_id;
-                          },
-                          function(newValue, oldValue) {
-                            if (newValue) {
-                              if (!fieldModel.data_model.filter_settings) {
-                                fieldModel.data_model.filter_settings = {
-                                  fields_to_view: []
-                                };
-                              }
-        
-                              gudhub.util.createFieldsListToView(
-                                newValue || scope.appId,
-                                fieldModel.data_model.filter_settings.fields_to_view
-                              ).then(function(columnsList) {
-                                fieldModel.data_model.filter_settings.fields_to_view = [];
-        
-                                angular.forEach(angular.copy(columnsList), function(
-                                  value
-                                ) {
-                                  fieldModel.data_model.filter_settings.fields_to_view.push(
-                                    {
-                                      field_id: value.field_id,
-                                      show: value.show
-                                    }
-                                  );
-                                });
-                              });
-                            } else {
-                              fieldModel.data_model.filter_settings.fields_to_view = [];
-                            }
                           }
                         );
                       }
